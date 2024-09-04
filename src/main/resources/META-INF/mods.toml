@@ -1,27 +1,27 @@
 modLoader="javafml"
 loaderVersion="${loader_range}"
-issueTrackerURL="https://github.com/SlimeKnights/Mantle/issues"
-logoFile="Mantle.png"
+issueTrackerURL="https://github.com/EraofMagica/EoMantle/issues"
+logoFile="EoMantle.png"
 license="MIT"
 
 [[mods]]
-    modId="mantle"
+    modId="eomantle"
     version="${version}"
-    displayName="Mantle"
-    authors="Slime Knights"
+    displayName="EoMantle"
+    authors="Slime Knights, To_Craft"
     description='''
 Shared code for Slime Knights mods and others.
     '''
-    displayURL="https://minecraft.curseforge.com/projects/mantle"
+    displayURL="https://github.com/EraofMagica/EoMantle"
 
-[[dependencies.mantle]]
+[[dependencies.eomantle]]
     modId="forge"
     mandatory=true
     versionRange="${forge_range}"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.mantle]]
+[[dependencies.eomantle]]
     modId="minecraft"
     mandatory=true
     versionRange="${minecraft_range}"

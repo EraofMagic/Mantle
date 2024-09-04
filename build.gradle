@@ -1,8 +1,9 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
 /*
- * Mantle
+ * EoMantle
  * Master build file
  * Based on TConstruct's master build file
- * Authors: Sunstrike, ProgWML6
+ * Authors: To_Craft, Sunstrike, ProgWML6
  * Help from AbrarSyed
 */
 
@@ -12,6 +13,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'io.freefair.lombok' version '8.6'
+    id 'net.darkhax.curseforgegradle' version '1.1.15'
 }
 
 repositories {
@@ -37,9 +39,9 @@ repositories {
     // }
 }
 
-group = 'slimeknights.mantle'
+group = 'dev.tocraft'
 base {
-    archivesName = 'Mantle'
+    archivesName = 'EoMantle'
 }
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -109,7 +111,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                mantle {
+                eomantle {
                     source sourceSets.main
                 }
             }
@@ -123,7 +125,7 @@ minecraft {
         }
 
         data {
-            args '--mod', 'mantle', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'eomantle', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
 }
@@ -159,12 +161,12 @@ tasks.named('processResources', ProcessResources).configure {
 tasks.named('jar', Jar).configure {
     manifest {
         attributes([
-                "Specification-Title"     : "Mantle",
-                "Specification-Vendor"    : "Slime Knights",
+                "Specification-Title"     : "EoMantle",
+                "Specification-Vendor"    : "Slime Knights, To_Craft",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${version}",
-                "Implementation-Vendor"   : "Slime Knights",
+                "Implementation-Vendor"   : "Slime Knights, To_Craft",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
@@ -182,19 +184,34 @@ artifacts {
 
 publishing {
     publications {
-        register('mavenJava', MavenPublication) {
+        mavenJava(MavenPublication) {
             artifact jar
             artifact sourcesJar
         }
     }
-
     repositories {
-        if (project.hasProperty('DEPLOY_DIR')) {
-            maven { url DEPLOY_DIR }
+        if (System.getenv("MAVEN_PASS") != null) {
+            maven {
+                name = "tocraftMavenPublic"
+                url "https://maven.tocraft.dev/public"
+
+                credentials {
+                    username = "tocraft"
+                    password = System.getenv("MAVEN_PASS")
+                }
+            }
         }
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+tasks.register('curseforge', TaskPublishCurseForge) {
+    apiToken = System.getenv("CURSEFORGE_TOKEN")
+
+    // The main file to upload
+    def mainFile = upload(927399, jar)
+    mainFile.displayName = project.minecraft_version + "-" + project.name + "-" + project.mod_version
+    mainFile.releaseType = 'release'
+    mainFile.addModLoader(project.name)
+    mainFile.addRequirement("crafted-core")
+    mainFile.changelog = "https://github.com/EraofMagic/eomtweaks/releases/tag/" + project.mod_version + "-" + project.minecraft_version
 }

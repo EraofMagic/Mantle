@@ -1,0 +1,12 @@
+{
+  "units": [
+    {
+      "key": "gui.eomantle.fluid.kilobucket",
+      "needed": 1000000
+    },
+    {
+      "key": "gui.eomantle.fluid.bucket",
+      "needed": 1000
+    }
+  ]
+}
